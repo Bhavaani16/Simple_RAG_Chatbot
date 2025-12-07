@@ -1,230 +1,160 @@
-# RAG System Group Project
+Here is a comprehensive `README.md` file tailored for your GitHub repository. It synthesizes the technical setup instructions, the project report details, and the evaluation metrics into a professional format.
 
-A hands-on group learning project for building a Retrieval-Augmented Generation (RAG) system using Python, Docker, and open-source AI models.
+-----
 
-## Overview
+# 🌌 Big Bang Cosmology RAG Agent
 
-This group project teaches students how to build a question-answering AI system that can:
-- Read and process documents
-- Find relevant information using semantic search
-- Generate accurate answers using a local LLM
+A Retrieval-Augmented Generation (RAG) system capable of answering complex questions about the Big Bang theory, cosmological history, and scientific evidence. This project utilizes a local LLM running via Docker and includes both a Jupyter-based chat interface and a web-based evaluation agent.
 
-Students will work in teams to practice fundamental Python skills while working with cutting-edge AI technology.
+## 📋 Project Overview
 
-## What You'll Learn
+This project implements a local RAG pipeline designed to ingest, chunk, and retrieve information from a specific corpus of scientific documents related to Big Bang Cosmology. It prevents hallucinations by grounding answers in retrieved context and handles out-of-scope queries gracefully.
 
-### Python Fundamentals
-- File I/O and text processing
-- String manipulation and chunking
-- Functions and data structures
-- Loops and conditionals
-- Working with external libraries
+**Key Features:**
 
-### AI/ML Concepts
-- Embeddings and vector search
-- Retrieval-Augmented Generation (RAG)
-- Language Model integration
-- System evaluation and metrics
+  * **Local Inference:** Runs entirely offline using Dockerized Ollama (Mistral 7B).
+  * **Dual Interfaces:**
+      * 🐍 **Jupyter Notebook:** Interactive chat with history.
+      * 🌐 **Web UI:** An `index.html` evaluation agent for testing specific queries.
+  * **Optimized Retrieval:** Uses a specific chunking strategy (500 chars) to maximize context relevance.
 
-## Project Structure
+-----
 
-```
-IS640_rag_project/
-├── README.md                      # This file
-├── STUDENT_PROJECT_GUIDE.md       # Detailed assignment instructions
-├── docker_starter.md              # Docker setup guide
-├── dockerfile                     # Docker image definition for Ollama
-├── COMMANDS.txt                   # Docker commands reference
-├── test_setup.ipynb              # Environment verification notebook
-├── rag_env.yml                    # Conda environment file
-├── .gitignore                     # Git ignore file
-├── docs/                          # Sample documents
-│   ├── text/                     # Text files for testing
-│   │   ├── Attendance_Rules.txt
-│   │   ├── Cheating_Rules.txt
-│   │   └── School_Parking_Rules.txt
-│   └── pdf/                      # (Optional) PDF documents
-└── chroma_db/                     # Vector database storage (created on first run)
-```
+## 🏗️ Architecture & Methodology
 
-## Quick Start
+### Data Corpus
+
+The knowledge base consists of six text files covering:
+
+  * Core definitions and History (Friedmann, Hubble, Lemaître).
+  * The "Four Pillars" of evidence (Hubble's Law, CMB, etc.).
+  * Timeline of the Universe (Planck epoch to present).
+  * Unresolved problems (Dark matter, Horizon problem).
+
+### [cite_start]RAG Pipeline Configuration [cite: 10, 11, 12, 13]
+
+  * **Chunking Strategy:** Fixed-size overlapping chunks.
+  * **Chunk Size:** 500 characters.
+  * **Overlap:** 50 characters.
+  * **Rationale:** This overlap ensures that sentences split across chunks retain context, improving vector retrieval accuracy.
+
+-----
+
+## 🚀 Installation & Setup
 
 ### Prerequisites
 
-- Python 3.12 or higher
-- Anaconda or Miniconda
-- Docker Desktop
-- VS Code (recommended)
-- 8GB RAM minimum (16GB recommended)
+  * [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running.
+  * Python 3.x.
 
-### Step 1: Clone the Repository
+### 1\. Build the Docker Image
+
+The project uses a custom Dockerfile to pre-load the Ollama model.
 
 ```bash
-git clone <repository-url>
-cd IS640_rag_project
+# Build the image containing Mistral 7B
+docker build -f dockerfile -t ollama-mistral-img .
 ```
 
-### Step 2: Set Up Docker
+### 2\. Run the Container
 
-Follow the instructions in [`docker_starter.md`](docker_starter.md) to:
-1. Install Docker Desktop
-2. Create a Docker account
-3. Set up the Docker extension for VS Code
+Start the container. Use the GPU command if you have NVIDIA hardware for faster inference.
 
-### Step 3: Create Conda Environment
-
-- Refer to rag_env_starter.md
-
-### Step 4: Build and Start the Ollama LLM
-
-Build the Docker image using the included `dockerfile`:
+**CPU Only:**
 
 ```bash
-# Build the Docker image (this will take 10-15 minutes)
-docker build -f dockerfile -t ollama-mistral-img .
-
-# Start the container (CPU only)
 docker run -d --rm --name ollama-mistral-offline -p 127.0.0.1:11434:11434 ollama-mistral-img
+```
 
-# Or with GPU support (if available)
+**With GPU Support:**
+
+```bash
 docker run -d --rm --gpus all --name ollama-mistral-offline -p 127.0.0.1:11434:11434 ollama-mistral-img
 ```
 
-For more Docker commands, see [`docker_commands.md`](docker_commands.md).
+### 3\. Verify Connection
 
-### Step 5: Verify Your Setup
+Ensure the API is accessible:
 
-Open and run `test_setup.ipynb` to verify everything is working correctly. This notebook will test:
-- Python dependencies
-- Ollama LLM connection
-- Embedding model
-- ChromaDB vector database
-
-### Step 6: Start the Assignment
-
-Read [`STUDENT_PROJECT_GUIDE.md`](STUDENT_PROJECT_GUIDE.md) for complete project instructions.
-
-## Requirements
-
-### Python Packages
-
-All required packages are included in `rag_env.yml`:
-- `sentence-transformers` - Text embeddings
-- `chromadb` - Vector database
-- `requests` - HTTP client for LLM
-- `numpy`, `pandas` - Data processing
-- `streamlit` - GUI for chat interface
-
-### Hardware
-
-- **Minimum:** 8GB RAM, 4-core CPU
-- **Recommended:** 16GB RAM, 8-core CPU, GPU (optional)
-- **Storage:** 5GB free space
-
-## Docker Setup
-
-The project includes a `dockerfile` that builds an Ollama container with the Mistral 7B model. This provides a local LLM with:
-- No API keys required
-- Complete privacy (runs locally)
-- Offline operation (once built)
-- Free usage
-
-The dockerfile uses a multi-stage build to:
-1. Download and install Ollama
-2. Pull the Mistral 7B model
-3. Create a minimal runtime image
-
-See [`docker_starter.md`](docker_starter.md) for detailed Docker Desktop setup and [`docker_commands.md`](docker_commands.md) for build/run commands.
-
-## Group Project Assignment
-
-This is a **group project** where teams will complete 7 TODO tasks:
-
-1. **Document Loading** - Load text files from a folder
-2. **Text Chunking** - Split documents into smaller pieces
-3. **Process Documents** - Apply chunking to all documents
-4. **RAG Query Function** - Build the main Q&A pipeline
-5. **Test Dataset** - Create evaluation questions
-6. **Evaluation Metrics** - Measure system performance
-7. **Run Evaluation** - Test and analyze results
-
-**Group Size:** 2-4 students per team
-
-See [`STUDENT_PROJECT_GUIDE.md`](STUDENT_PROJECT_GUIDE.md) for complete details, group responsibilities, grading rubric, and submission requirements.
-
-## Sample Documents
-
-The `docs/text/` folder contains sample school policy documents for testing. Teams should:
-1. Test with the provided documents first
-2. Create their own document collection (5-10 files)
-3. Choose topics the team understands well
-
-## Troubleshooting
-
-### Environment Issues
-
-**Problem:** Conda environment won't create
 ```bash
-# Try creating manually
-conda create -n rag3_313 python=3.13
-conda activate rag3_313
-pip install sentence-transformers chromadb requests
-```
-
-### Docker Issues
-
-**Problem:** Docker container won't start
-- Verify Docker Desktop is running
-- Check WSL 2 is installed (Windows)
-- Enable virtualization in BIOS
-
-**Problem:** Can't connect to Ollama
-```bash
-# Check if container is running
-docker ps
-
-# Test connection
 curl http://127.0.0.1:11434/api/tags
 ```
 
-### Notebook Issues
+-----
 
-**Problem:** Kernel crashes when loading embedding model
-- Your system may need more RAM
-- Try a smaller model
-- Close other applications
+## 💻 Usage
 
-## Support
+### Option A: Jupyter Chat Interface
 
-- **Assignment Questions:** See [`STUDENT_PROJECT_GUIDE.md`](STUDENT_PROJECT_GUIDE.md)
-- **Docker Setup:** See [`docker_starter.md`](docker_starter.md)
-- **Docker Commands:** See [`docker_commands.md`](docker_commands.md)
-- **Technical Issues:** Check the troubleshooting section above
+1.  Open `chat_interface.ipynb` in VS Code or Jupyter Lab.
+2.  Install dependencies if needed: `pip install ipywidgets requests`.
+3.  Run all cells to initialize the UI.
+4.  Chat with the model directly in the notebook.
 
-## Resources
+### Option B: Web Evaluation Agent
 
-### Learning Materials
-- [Python Official Tutorial](https://docs.python.org/3/tutorial/)
-- [Docker Documentation](https://docs.docker.com/)
-- [ChromaDB Documentation](https://docs.trychroma.com/)
-- [Sentence Transformers](https://www.sbert.net/)
+1.  Open `index.html` in any modern web browser.
+2.  Enter a query (e.g., *"What are the four pillars of evidence?"*).
+3.  View the retrieved context chunks, inference time, and the generated answer.
 
-### Understanding RAG
-- [What is RAG?](https://www.pinecone.io/learn/retrieval-augmented-generation/)
-- [LangChain RAG Tutorial](https://python.langchain.com/docs/tutorials/rag/)
+### Option C: Low Resource Mode (Gemma 1B)
 
-## License
+[cite_start]If your hardware struggles with Mistral 7B, you can use the smaller Gemma model[cite: 3].
 
-This project is designed for educational purposes.
+1.  Build the small model image:
+    ```bash
+    docker build -f optional_small_model_dockerfile -t ollama-gemma-img .
+    ```
+2.  Run the container:
+    ```bash
+    docker run -d --name ollama-gemma-offline -p 127.0.0.1:11434:11434 ollama-gemma-img
+    ```
+3.  Update `MODEL_NAME` in the Python scripts to `"gemma3:1b-it-qat"`.
 
-## Acknowledgments
+-----
 
-Built using:
-- [Ollama](https://ollama.ai/) - Local LLM runtime
-- [ChromaDB](https://www.trychroma.com/) - Vector database
-- [Sentence Transformers](https://www.sbert.net/) - Embedding models
-- [Mistral AI](https://mistral.ai/) - Language model
+## 📊 Evaluation Results
 
----
+The system was evaluated against a test suite of factual, conceptual, and out-of-scope questions.
 
-**Ready to build your first RAG system? Start with [`STUDENT_PROJECT_GUIDE.md`](STUDENT_PROJECT_GUIDE.md)!**
+| Metric | Result | Description |
+| :--- | :--- | :--- |
+| **Hit Rate** | **85.7%** | [cite_start]6/7 queries successfully retrieved relevant context[cite: 21]. |
+| **Avg Latency** | **0.23s** | [cite_start]Average time for the pipeline to process[cite: 21]. |
+| **Source Usage** | **3 Files** | Primary sources: *Big Bang.txt, Evidence-Big Bang.txt, Timeline-Big Bang.txt*. |
+
+### Example Success
+
+  * **Query:** "What are the four main pillars of evidence supporting the Big Bang theory?"
+  * [cite_start]**Result:** Correctly identified Expansion, CMB, Light Element Abundances, and Structure Formation[cite: 24].
+
+### Guardrails (Out-of-Scope)
+
+  * **Query:** "What happens if you cheat?"
+  * [cite_start]**Result:** The system correctly identified that no context existed and refused to answer, preventing hallucination[cite: 25, 26].
+
+-----
+
+## 📂 Project Structure
+
+```text
+├── 📓 chat_interface.ipynb           # Interactive Python Chat UI
+├── 🐳 dockerfile                     # Main Docker build (Mistral 7B)
+├── 🐳 optional_small_model_dockerfile # Low-resource Docker build (Gemma 1B)
+├── 📄 docker_commands.md             # Cheat sheet for Docker operations
+├── 🌐 index.html                     # Web-based Evaluation UI
+├── 📊 evaluation_results.json        # Raw metrics data
+├── 📝 RAG Report.docx                # Detailed project documentation
+└── 📂 data/                          # Source text files (Big Bang corpus)
+```
+
+-----
+
+## 👥 Credits
+
+  * **Dataset:** Big Bang Cosmology Text Corpus
+  * **Tools:** Ollama, Docker, Python
+
+-----
+
+*Created for the RAG Implementation Project.*
